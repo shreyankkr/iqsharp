@@ -20,7 +20,7 @@ namespace Microsoft.Quantum.IQSharp.Jupyter
     ///     and all the Assemblies in global references (including those
     ///     added via nuget Packages).
     /// </summary>
-    //public class MagicSymbolResolver : ISymbolResolver
+    public class MagicSymbolResolver : ISymbolResolver
     {
         private AssemblyInfo kernelAssembly;
         private Dictionary<AssemblyInfo, MagicSymbol[]> cache;
