@@ -5,6 +5,7 @@ Welcome to the Microsoft Quantum Development Kit!
 This repository contains the IQ# kernel for the [Quantum Development Kit](https://docs.microsoft.com/quantum/).
 This kernel provides Q# support for the Jupyter platform, as well as the backend used by the Python client for Q#.
 
+
 - **[src/Core/](./src/Core/)**: Core of the IQ# kernel.
 - **[src/Jupyter/](./src/Jupyter/)**: Assembly used to interoperate between Jupyter and the rest of the IQ# kernel.
 - **[src/Python/](./src/Python)**: Python package for accessing IQ#.
