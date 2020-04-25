@@ -71,7 +71,10 @@ namespace Microsoft.Quantum.IQSharp
         /// </summary>
         Task AddPackage(string name, Action<string>? statusCallback = null);
 
-
-        void AddAssemblies(params AssemblyInfo[] assembly);
+        /// <summary>
+        /// Adds a nuget package. Instead of downloading the package from a repository,
+        /// the caller is responsible to provide the list of assemblies in the package.
+        /// </summary>
+        Task AddBuiltInPakage(string name, params AssemblyInfo[] assemblies);
     }
 }

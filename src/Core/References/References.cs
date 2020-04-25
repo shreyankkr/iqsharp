@@ -87,6 +87,9 @@ namespace Microsoft.Quantum.IQSharp
                 ?.Items
                 ?.Select(p => $"{p.Id}::{p.Version}");
 
+        /// <summary>
+        /// Adds the given assemblies.
+        /// </summary>
         public void AddAssemblies(params AssemblyInfo[] assemblies)
         {
             Assemblies = Assemblies.Union(assemblies).ToImmutableArray();
@@ -99,19 +102,31 @@ namespace Microsoft.Quantum.IQSharp
         /// </summary>
         public async Task AddPackage(string name, Action<string>? statusCallback = null)
         {
-            //var duration = Stopwatch.StartNew();
+            var duration = Stopwatch.StartNew();
 
-            //if (Nugets == null)
-            //{
-            //    throw new InvalidOperationException("Packages can be only added to the global references collection");
-            //}
+            if (Nugets == null)
+            {
+                throw new InvalidOperationException("Packages can be only added to the global references collection");
+            }
 
-            //var pkg = await Nugets.Add(name, statusCallback);
+            var pkg = await Nugets.Add(name, statusCallback);
 
-            //AddAssemblies(Nugets.Assemblies.ToArray());
+            AddAssemblies(Nugets.Assemblies.ToArray());
 
-            //duration.Stop();
-            //PackageLoaded?.Invoke(this, new PackageLoadedEventArgs(pkg.Id, pkg.Version.ToNormalizedString(), duration.Elapsed));
+            duration.Stop();
+            PackageLoaded?.Invoke(this, new PackageLoadedEventArgs(pkg.Id, pkg.Version.ToNormalizedString(), duration.Elapsed));
+        }
+
+        public async Task AddBuiltInPakage(string package, params AssemblyInfo[] assemblies)
+        {
+            if (Nugets == null)
+            {
+                throw new InvalidOperationException("Packages can be only added to the global references collection");
+            }
+
+            var pkgId = await Nugets.ParsePackageId(package);
+            Nugets.Add(pkgId, assemblies);
+            AddAssemblies(assemblies);
         }
 
         private void Reset()

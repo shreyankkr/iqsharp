@@ -52,10 +52,10 @@ namespace Microsoft.Quantum.IQSharp
         public NuGetLogger Logger { get; }
 
         // List of Packages already installed.
-        public IEnumerable<PackageIdentity> Items { get; private set; }
+        public IEnumerable<PackageIdentity> Items { get; internal set; }
 
         // List of Assemblies from current Packages..
-        public IEnumerable<AssemblyInfo> Assemblies { get; private set; }
+        public IEnumerable<AssemblyInfo> Assemblies { get; internal set; }
 
         // List of Nuget repositories. This is populated from NugetSettings.
         // It can't be cached otherwise we can't detect changes to repositores.
@@ -206,9 +206,14 @@ namespace Microsoft.Quantum.IQSharp
 
                 await DownloadPackages(sourceCacheContext, packages, statusCallback);
 
-                this.Items = Items.Union(new PackageIdentity[] { pkgId }).ToArray();
-                this.Assemblies = Assemblies.Union(packages.Reverse().SelectMany(GetAssemblies)).ToArray();
+                Add(pkgId, packages.Reverse().SelectMany(GetAssemblies));
             }
+        }
+
+        internal void Add(PackageIdentity pkgId, IEnumerable<AssemblyInfo> assemblies)
+        {
+            this.Items = Items.Union(new PackageIdentity[] { pkgId }).ToArray();
+            this.Assemblies = Assemblies.Union(assemblies).ToArray();
         }
 
         /// <summary>
