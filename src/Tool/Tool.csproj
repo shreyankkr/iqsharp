@@ -45,9 +45,15 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0" />
-    <PackageReference Include="Microsoft.NETCore.Portable.Compatibility" Version="1.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0-dev-00039" />
   </ItemGroup>
 
-</Project>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Quantum.Standard" Version="0.11.2004.2414-beta" />
+    <PackageReference Include="Microsoft.Quantum.Katas" Version="0.11.2004.2414-beta" />
+    <PackageReference Include="Microsoft.Quantum.Chemistry.Jupyter" Version="0.11.2004.2414-beta" />
+  </ItemGroup>
+
+  </Project>

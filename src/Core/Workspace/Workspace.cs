@@ -217,6 +217,11 @@ namespace Microsoft.Quantum.IQSharp
         /// </summary>
         public void Reload()
         {
+            if (IsCacheFresh())
+            {
+                return;
+            }
+
             var duration = Stopwatch.StartNew();
             var files = new string[0];
             var errorIds = new string[0];

@@ -71,5 +71,7 @@ namespace Microsoft.Quantum.IQSharp
         /// </summary>
         Task AddPackage(string name, Action<string>? statusCallback = null);
 
+
+        void AddAssemblies(params AssemblyInfo[] assembly);
     }
 }

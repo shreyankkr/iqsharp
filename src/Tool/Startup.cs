@@ -4,7 +4,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Quantum.Canon;
+using Microsoft.Quantum.Chemistry.Magic;
 using Microsoft.Quantum.IQSharp.Jupyter;
+using Microsoft.Quantum.Simulation.Core;
 using System;
 
 namespace Microsoft.Quantum.IQSharp
@@ -24,6 +27,18 @@ namespace Microsoft.Quantum.IQSharp
             services.AddSingleton(typeof(ITelemetryService), GetTelemetryServiceType());
             services.AddIQSharp();
             services.AddIQSharpKernel();
+
+            services.AddSingleton<IReferences, References>(provider =>
+            {
+                var refs = ActivatorUtilities.CreateInstance<References>(provider);
+                refs.AddAssemblies(
+                    new AssemblyInfo(typeof(ApplyToEach<>).Assembly),
+                    new AssemblyInfo(typeof(Katas.KataMagic).Assembly),
+                    new AssemblyInfo(typeof(BroombridgeMagic).Assembly)
+                );
+
+                return refs;
+            });
 
             var assembly = typeof(PackagesController).Assembly;
             services.AddControllers()

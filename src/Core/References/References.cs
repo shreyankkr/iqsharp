@@ -56,10 +56,10 @@ namespace Microsoft.Quantum.IQSharp
 
             eventService?.TriggerServiceInitialized<IReferences>(this);
 
-            foreach (var pkg in BUILT_IN_PACKAGES)
-            {
-                AddPackage(pkg).Wait();
-            }
+            //foreach (var pkg in BUILT_IN_PACKAGES)
+            //{
+            //    AddPackage(pkg).Wait();
+            //}
 
             AssemblyLoadContext.Default.Resolving += Resolve;
 
@@ -87,26 +87,31 @@ namespace Microsoft.Quantum.IQSharp
                 ?.Items
                 ?.Select(p => $"{p.Id}::{p.Version}");
 
+        public void AddAssemblies(params AssemblyInfo[] assemblies)
+        {
+            Assemblies = Assemblies.Union(assemblies).ToImmutableArray();
+            Reset();
+        }
+
         /// <summary>
         /// Adds the libraries from the given nuget package to the list of assemblies.
         /// If version is not provided. It automatically picks up the latest version.
         /// </summary>
         public async Task AddPackage(string name, Action<string>? statusCallback = null)
         {
-            var duration = Stopwatch.StartNew();
+            //var duration = Stopwatch.StartNew();
 
-            if (Nugets == null)
-            {
-                throw new InvalidOperationException("Packages can be only added to the global references collection");
-            }
+            //if (Nugets == null)
+            //{
+            //    throw new InvalidOperationException("Packages can be only added to the global references collection");
+            //}
 
-            var pkg = await Nugets.Add(name, statusCallback);
+            //var pkg = await Nugets.Add(name, statusCallback);
 
-            Assemblies = Assemblies.Union(Nugets.Assemblies).ToImmutableArray();
-            Reset();
+            //AddAssemblies(Nugets.Assemblies.ToArray());
 
-            duration.Stop();
-            PackageLoaded?.Invoke(this, new PackageLoadedEventArgs(pkg.Id, pkg.Version.ToNormalizedString(), duration.Elapsed));
+            //duration.Stop();
+            //PackageLoaded?.Invoke(this, new PackageLoadedEventArgs(pkg.Id, pkg.Version.ToNormalizedString(), duration.Elapsed));
         }
 
         private void Reset()
