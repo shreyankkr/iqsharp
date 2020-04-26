@@ -27,11 +27,6 @@ function Build-One {
     }
 }
 
-# Fetch TypeScript definitions
-Push-Location (Join-Path $PSScriptRoot ../src/Jupyter)
-    npm install
-Pop-Location
-
 Build-One build '../iqsharp.sln'
 
 if (-not $all_ok) 

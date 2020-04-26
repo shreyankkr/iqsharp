@@ -15,3 +15,8 @@ if (($Env:ASSEMBLY_CONSTANTS -ne $null) -and ($Env:ASSEMBLY_CONSTANTS.Contains("
 }
 
 
+# Install TypeScript definitions for Jupyter
+Push-Location (Join-Path $PSScriptRoot ./src/Jupyter)
+    npm install
+Pop-Location
+
