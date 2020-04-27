@@ -53,10 +53,10 @@ namespace Microsoft.Quantum.IQSharp
         public NuGetLogger Logger { get; }
 
         // List of Packages already installed.
-        public IEnumerable<PackageIdentity> Items { get; internal set; }
+        public IEnumerable<PackageIdentity> Items { get; private set; }
 
         // List of Assemblies from current Packages..
-        public IEnumerable<AssemblyInfo> Assemblies { get; internal set; }
+        public IEnumerable<AssemblyInfo> Assemblies { get; private set; }
 
         // List of Nuget repositories. This is populated from NugetSettings.
         // It can't be cached otherwise we can't detect changes to repositores.

@@ -32,19 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Workspace.Broken\BasicOps.qs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Workspace.Broken\NoOp.qs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Workspace.Chemistry\Operation.qs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Workspace\BasicOps.qs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Workspace\NoOp.qs">
+    <None Update="Workspace*\*.qs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -47,6 +47,7 @@ namespace Microsoft.Quantum.IQSharp
                 new AssemblyInfo(typeof(Chemistry.Magic.BroombridgeMagic).Assembly),
                 new AssemblyInfo(typeof(Chemistry.JordanWigner.PrepareTrialState).Assembly),
                 new AssemblyInfo(typeof(Research.Characterization.RandomWalkPhaseEstimation).Assembly),
+                new AssemblyInfo(typeof(Research.Chemistry.OptimizedTrotterStepOracle).Assembly),
                 new AssemblyInfo(typeof(MachineLearning.ApplySequentialClassifier).Assembly),
                 new AssemblyInfo(typeof(Arithmetic.AddI).Assembly)
             );

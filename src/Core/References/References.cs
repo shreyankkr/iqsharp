@@ -63,7 +63,7 @@ namespace Microsoft.Quantum.IQSharp
         /// <summary>
         /// The plain list of Assemblies to be used as References. 
         /// </summary>
-        public ImmutableArray<AssemblyInfo> Assemblies { get; internal set; }
+        public ImmutableArray<AssemblyInfo> Assemblies { get; private set; }
 
         public CompilerMetadata CompilerMetadata => _metadata.Value;
 

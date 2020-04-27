@@ -49,6 +49,7 @@ namespace Tests.IQSharp
             Assert.IsFalse(ws.HasErrors);
             Assert.AreSame(originalAssembly, ws.AssemblyInfo);
 
+            // Touch a file to generate a new dll:
             var fileName = Path.Combine(Path.GetFullPath("Workspace"), "BasicOps.qs");
             File.SetLastWriteTimeUtc(fileName, DateTime.UtcNow);
             ws.Reload();
