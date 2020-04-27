@@ -76,5 +76,16 @@ namespace Tests.IQSharp
             Assert.IsFalse(ws.HasErrors);
             Assert.IsNotNull(op);
         }
+
+
+        [TestMethod]
+        public void DeutschJozsaAlgorithmWorkspace()
+        {
+            var ws = Startup.Create<Workspace>("Workspace.DeutschJozsaAlgorithm");
+            var op = ws.AssemblyInfo.Operations.FirstOrDefault(o => o.FullName == "Quantum.Kata.DeutschJozsaAlgorithm.Oracle_Zero");
+            ws.Reload();
+            Assert.IsFalse(ws.HasErrors);
+            Assert.IsNotNull(op);
+        }
     }
 }

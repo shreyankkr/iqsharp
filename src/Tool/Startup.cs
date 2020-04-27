@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Quantum.IQSharp.Jupyter;
+using Utils = Quantum.Kata.Utils;
 
 namespace Microsoft.Quantum.IQSharp
 {
@@ -42,9 +43,12 @@ namespace Microsoft.Quantum.IQSharp
             refs.AddAssemblies(
                 new AssemblyInfo(typeof(Canon.ApplyToEach<>).Assembly),
                 new AssemblyInfo(typeof(Katas.KataMagic).Assembly),
+                new AssemblyInfo(typeof(Utils.GetOracleCallsCount<>).Assembly),
                 new AssemblyInfo(typeof(Chemistry.Magic.BroombridgeMagic).Assembly),
                 new AssemblyInfo(typeof(Chemistry.JordanWigner.PrepareTrialState).Assembly),
-                new AssemblyInfo(typeof(Research.Characterization.RandomWalkPhaseEstimation).Assembly)
+                new AssemblyInfo(typeof(Research.Characterization.RandomWalkPhaseEstimation).Assembly),
+                new AssemblyInfo(typeof(MachineLearning.ApplySequentialClassifier).Assembly),
+                new AssemblyInfo(typeof(Arithmetic.AddI).Assembly)
             );
 
             return refs;

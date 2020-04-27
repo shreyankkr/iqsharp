@@ -397,6 +397,21 @@ namespace Tests.IQSharp
             Assert.IsNotNull(symbol);
             Assert.AreEqual("Microsoft.Quantum.Canon.ApplyToEach", symbol.Name);
 
+            /// From Katas:
+            symbol = resolver.Resolve("GetOracleCallsCount");
+            Assert.IsNotNull(symbol);
+            Assert.AreEqual("Quantum.Kata.Utils.GetOracleCallsCount", symbol.Name);
+
+            /// From Numerics:
+            symbol = resolver.Resolve("AddI");
+            Assert.IsNotNull(symbol);
+            Assert.AreEqual("Microsoft.Quantum.Arithmetic.AddI", symbol.Name);
+
+            /// From MachineLearning:
+            symbol = resolver.Resolve("ApplySequentialClassifier");
+            Assert.IsNotNull(symbol);
+            Assert.AreEqual("Microsoft.Quantum.MachineLearning.ApplySequentialClassifier", symbol.Name);
+
             // Snippets:
             symbol = resolver.Resolve("HelloQ");
             Assert.IsNotNull(symbol);
@@ -424,6 +439,8 @@ namespace Tests.IQSharp
             Assert.IsNotNull(symbol);
             Assert.AreEqual("%package", symbol.Name);
 
+            Assert.IsNotNull(resolver.Resolve("%katas"));
+            Assert.IsNotNull(resolver.Resolve("%chemistry.broombridge"));
             Assert.IsNotNull(resolver.Resolve("%who"));
             Assert.IsNotNull(resolver.Resolve("%estimate"));
             Assert.IsNotNull(resolver.Resolve("%simulate"));
