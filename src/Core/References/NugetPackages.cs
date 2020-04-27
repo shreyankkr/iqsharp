@@ -40,6 +40,7 @@ namespace Microsoft.Quantum.IQSharp
 
         // The list of settings for this class. It extends Workspace.Settings so it can get things
         // list root and cache folder. 
+        // TODO
         public class Settings : Workspace.Settings
         {
             public string[]? DefaultPackageVersions { get; set; } = null;
@@ -194,7 +195,7 @@ namespace Microsoft.Quantum.IQSharp
         /// <summary>
         /// Adds the given package.
         /// </summary>
-        public async Task Add(PackageIdentity pkgId, Action<string>? statusCallback = null)
+        internal async Task Add(PackageIdentity pkgId, Action<string>? statusCallback = null)
         {
             // Already added:
             if (Items.Contains(pkgId)) return;
@@ -206,14 +207,9 @@ namespace Microsoft.Quantum.IQSharp
 
                 await DownloadPackages(sourceCacheContext, packages, statusCallback);
 
-                Add(pkgId, packages.Reverse().SelectMany(GetAssemblies));
+                this.Items = Items.Union(new PackageIdentity[] { pkgId }).ToArray();
+                this.Assemblies = Assemblies.Union(packages.Reverse().SelectMany(GetAssemblies)).ToArray();
             }
-        }
-
-        internal void Add(PackageIdentity pkgId, IEnumerable<AssemblyInfo> assemblies)
-        {
-            this.Items = Items.Union(new PackageIdentity[] { pkgId }).ToArray();
-            this.Assemblies = Assemblies.Union(assemblies).ToArray();
         }
 
         /// <summary>
@@ -275,7 +271,13 @@ namespace Microsoft.Quantum.IQSharp
             if (pkg == null || IsSystemPackage(pkg)) return Enumerable.Empty<AssemblyInfo>();
 
             var pkgInfo = LocalPackagesFinder.GetPackage(pkg, Logger, CancellationToken.None);
-            var packageReader = pkgInfo?.GetReader();
+            if (pkgInfo == null)
+            {
+                Logger.LogWarning($"Could not find Package {pkg}");
+                return Enumerable.Empty<AssemblyInfo>();
+            }
+
+            var packageReader = pkgInfo.GetReader();
             var libs = packageReader?.GetLibItems();
 
             // If package contains no dlls:

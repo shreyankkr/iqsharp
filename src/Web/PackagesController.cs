@@ -53,7 +53,14 @@ namespace Microsoft.Quantum.IQSharp
         {
             try
             {
-                await References.AddPackage(pkg);
+                if (!string.IsNullOrWhiteSpace(pkg))
+                {
+                    if (!pkg.TrimStart().StartsWith("microsoft.quantum", StringComparison.OrdinalIgnoreCase))
+                    {
+                        await References.AddPackage(pkg);
+                    }
+                }
+
                 return await List();
             }
             catch (Exception e)

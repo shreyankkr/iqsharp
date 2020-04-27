@@ -254,6 +254,7 @@ namespace Tests.IQSharp
         {
             var engine = Init();
             var snippets = engine.Snippets as Snippets;
+            
             var pkgMagic = new PackageMagic(snippets.GlobalReferences);
             var channel = new MockChannel();
             var response = await pkgMagic.Execute("", channel);
@@ -262,25 +263,27 @@ namespace Tests.IQSharp
             Assert.AreEqual(ExecuteStatus.Ok, response.Status);
             Assert.AreEqual(0, channel.msgs.Count);
             Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.Length);
+            var initialCount = result.Length;
 
-            // Try compiling TrotterEstimateEnergy, it should fail due to the lack
-            // of chemistry package.
-            response = await engine.ExecuteMundane(SNIPPETS.TrotterEstimateEnergy, channel);
-            PrintResult(response, channel);
-            Assert.AreEqual(ExecuteStatus.Error, response.Status);
-
+            // Microsoft.Quantum.* packages are built-in, and trying to add them is a no-op
+            // (they just respond back a message).
             response = await pkgMagic.Execute("microsoft.quantum.chemistry", channel);
+            result = response.Output as string[];
+            PrintResult(response, channel);
+            Assert.AreEqual(ExecuteStatus.Ok, response.Status);
+            Assert.AreEqual(1, channel.msgs.Count);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(initialCount, result.Length);
+
+            // Load jquery, as a package with no side effects, just to make sure it can be loaded.
+            channel = new MockChannel();
+            response = await pkgMagic.Execute("jquery::3.5.0.1", channel);
             result = response.Output as string[];
             PrintResult(response, channel);
             Assert.AreEqual(ExecuteStatus.Ok, response.Status);
             Assert.AreEqual(0, channel.msgs.Count);
             Assert.IsNotNull(result);
-            Assert.AreEqual(2, result.Length);
-
-            // Now it should compile:
-            await AssertCompile(engine, SNIPPETS.TrotterEstimateEnergy, "TrotterEstimateEnergy");
-
+            Assert.AreEqual(initialCount + 1, result.Length);
         }
 
         [TestMethod]
@@ -291,15 +294,14 @@ namespace Tests.IQSharp
             var pkgMagic = new PackageMagic(snippets.GlobalReferences);
             var channel = new MockChannel();
 
-            var response = await pkgMagic.Execute("microsoft.quantum", channel);
+            var response = await pkgMagic.Execute("microsoft.invalid.quantum", channel);
             var result = response.Output as string[];
             PrintResult(response, channel);
             Assert.AreEqual(ExecuteStatus.Error, response.Status);
             Assert.AreEqual(1, channel.errors.Count);
-            Assert.IsTrue(channel.errors[0].StartsWith("Unable to find package 'microsoft.quantum'"));
+            Assert.IsTrue(channel.errors[0].StartsWith("Unable to find package 'microsoft.invalid.quantum'"));
             Assert.IsNull(result);
         }
-
 
         [TestMethod]
         public async Task TestWho()
@@ -332,31 +334,8 @@ namespace Tests.IQSharp
             var channel = new MockChannel();
             var result = new string[0];
 
-            // Check the workspace, it should be in error state:
+            // Check the workspace, it should be ok:
             var response = await wsMagic.Execute("reload", channel);
-            PrintResult(response, channel);
-            Assert.AreEqual(ExecuteStatus.Error, response.Status);
-
-            response = await wsMagic.Execute("", channel);
-            PrintResult(response, channel);
-            Assert.AreEqual(ExecuteStatus.Error, response.Status);
-
-            // Try compiling a snippet that depends on a workspace that depends on the chemistry package:
-            response = await engine.ExecuteMundane(SNIPPETS.DependsOnChemistryWorkspace, channel);
-            PrintResult(response, channel);
-            Assert.AreEqual(ExecuteStatus.Error, response.Status);
-            Assert.AreEqual(0, channel.msgs.Count);
-
-            // Add dependencies:
-            response = await pkgMagic.Execute("microsoft.quantum.chemistry", channel);
-            PrintResult(response, channel);
-            Assert.AreEqual(ExecuteStatus.Ok, response.Status);
-            response = await pkgMagic.Execute("microsoft.quantum.research", channel);
-            PrintResult(response, channel);
-            Assert.AreEqual(ExecuteStatus.Ok, response.Status);
-
-            // Reload workspace:
-            response = await wsMagic.Execute("reload", channel);
             PrintResult(response, channel);
             Assert.AreEqual(ExecuteStatus.Ok, response.Status);
 
@@ -366,7 +345,7 @@ namespace Tests.IQSharp
             Assert.AreEqual(ExecuteStatus.Ok, response.Status);
             Assert.AreEqual(3, result.Length);
 
-            // Now compilation must work:
+            // Compilation must work:
             await AssertCompile(engine, SNIPPETS.DependsOnChemistryWorkspace, "DependsOnChemistryWorkspace");
 
             // Check an invalid command
@@ -409,6 +388,11 @@ namespace Tests.IQSharp
             Assert.AreEqual("Tests.qss.CCNOTDriver", symbol.Name);
 
             /// From Canon:
+            symbol = resolver.Resolve("ApplyToEach");
+            Assert.IsNotNull(symbol);
+            Assert.AreEqual("Microsoft.Quantum.Canon.ApplyToEach", symbol.Name);
+
+            /// From Chemistry:
             symbol = resolver.Resolve("ApplyToEach");
             Assert.IsNotNull(symbol);
             Assert.AreEqual("Microsoft.Quantum.Canon.ApplyToEach", symbol.Name);

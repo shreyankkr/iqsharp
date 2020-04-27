@@ -35,6 +35,8 @@ namespace Tests.IQSharp
             services.AddIQSharp();
             services.AddIQSharpKernel();
 
+            services.AddSingleton<IReferences, References>(Microsoft.Quantum.IQSharp.Startup.AddBuiltInAssemblies);
+
             var serviceProvider = services.BuildServiceProvider();
             serviceProvider.GetRequiredService<ITelemetryService>();
             return serviceProvider;

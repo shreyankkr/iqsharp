@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.IO;
 using System.Linq;
 using Microsoft.Quantum.IQSharp;
@@ -38,10 +39,22 @@ namespace Tests.IQSharp
         public void ReloadWorkspace()
         {
             var ws = Startup.Create<Workspace>("Workspace");
+            var originalAssembly = ws.AssemblyInfo;
+            var op = ws.AssemblyInfo.Operations.FirstOrDefault(o => o.FullName == "Tests.qss.NoOp");
+            Assert.IsFalse(ws.HasErrors);
+            Assert.IsNotNull(op);
+
+            // Calling Reload with no changes is no-op
             ws.Reload();
             Assert.IsFalse(ws.HasErrors);
+            Assert.AreSame(originalAssembly, ws.AssemblyInfo);
 
-            var op = ws.AssemblyInfo.Operations.FirstOrDefault(o => o.FullName == "Tests.qss.NoOp");
+            var fileName = Path.Combine(Path.GetFullPath("Workspace"), "BasicOps.qs");
+            File.SetLastWriteTimeUtc(fileName, DateTime.UtcNow);
+            ws.Reload();
+            op = ws.AssemblyInfo.Operations.FirstOrDefault(o => o.FullName == "Tests.qss.NoOp");
+            Assert.IsFalse(ws.HasErrors);
+            Assert.AreNotSame(originalAssembly, ws.AssemblyInfo);
             Assert.IsNotNull(op);
         }
 
@@ -58,14 +71,9 @@ namespace Tests.IQSharp
         public void ChemistryWorkspace()
         {
             var ws = Startup.Create<Workspace>("Workspace.Chemistry");
-            ws.Reload();
-            Assert.IsTrue(ws.HasErrors);
-
-            ws.GlobalReferences.AddPackage("Microsoft.Quantum.Research").Wait();
+            var op = ws.AssemblyInfo.Operations.FirstOrDefault(o => o.FullName == "Microsoft.Quantum.Chemistry.Samples.OptimizedTrotterEstimateEnergy");
             ws.Reload();
             Assert.IsFalse(ws.HasErrors);
-
-            var op = ws.AssemblyInfo.Operations.FirstOrDefault(o => o.FullName == "Microsoft.Quantum.Chemistry.Samples.OptimizedTrotterEstimateEnergy");
             Assert.IsNotNull(op);
         }
     }

@@ -71,7 +71,14 @@ namespace Microsoft.Quantum.IQSharp.Jupyter
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
-                await References.AddPackage(name, statusCallback);
+                if (name.TrimStart().StartsWith("microsoft.quantum", StringComparison.OrdinalIgnoreCase))
+                {
+                    channel.Stdout("Microsoft.Quantum packages are built-in into kernel, no need to explicitly add them.");
+                }
+                else
+                {
+                    await References.AddPackage(name, statusCallback);
+                }
             }
 
             return References.Packages.ToArray().ToExecutionResult();

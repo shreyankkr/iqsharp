@@ -13,6 +13,11 @@ namespace Microsoft.Quantum.IQSharp
     public interface ICompilerService
     {
         /// <summary>
+        /// List of auto-opened namespaces when compiling Q# snippets.
+        /// </summary>
+        public IEnumerable<string> AutoOpenNamespaces { get; set; }
+
+        /// <summary>
         /// Builds the corresponding .net core assembly from the code in the given Q# Snippets.
         /// </summary>
         AssemblyInfo BuildSnippets(Snippet[] snippets, CompilerMetadata metadatas, QSharpLogger logger, string dllName);

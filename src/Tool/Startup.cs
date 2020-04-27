@@ -1,14 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Quantum.Canon;
-using Microsoft.Quantum.Chemistry.Magic;
 using Microsoft.Quantum.IQSharp.Jupyter;
-using Microsoft.Quantum.Simulation.Core;
-using System;
 
 namespace Microsoft.Quantum.IQSharp
 {
@@ -28,21 +26,28 @@ namespace Microsoft.Quantum.IQSharp
             services.AddIQSharp();
             services.AddIQSharpKernel();
 
-            //services.AddSingleton<IReferences, References>(provider =>
-            //{
-            //    var refs = ActivatorUtilities.CreateInstance<References>(provider);
-            //    refs.AddAssemblies(
-            //        new AssemblyInfo(typeof(ApplyToEach<>).Assembly),
-            //        new AssemblyInfo(typeof(Katas.KataMagic).Assembly),
-            //        new AssemblyInfo(typeof(BroombridgeMagic).Assembly)
-            //    );
-
-            //    return refs;
-            //});
+            services.AddSingleton<IReferences, References>(AddBuiltInAssemblies);
 
             var assembly = typeof(PackagesController).Assembly;
             services.AddControllers()
                 .AddApplicationPart(assembly);
+        }
+
+        /// <summary>
+        /// Adds Q# Libraries as references so they are available for compilation.
+        /// </summary>
+        public static References AddBuiltInAssemblies(IServiceProvider provider)
+        {
+            var refs = ActivatorUtilities.CreateInstance<References>(provider);
+            refs.AddAssemblies(
+                new AssemblyInfo(typeof(Canon.ApplyToEach<>).Assembly),
+                new AssemblyInfo(typeof(Katas.KataMagic).Assembly),
+                new AssemblyInfo(typeof(Chemistry.Magic.BroombridgeMagic).Assembly),
+                new AssemblyInfo(typeof(Chemistry.JordanWigner.PrepareTrialState).Assembly),
+                new AssemblyInfo(typeof(Research.Characterization.RandomWalkPhaseEstimation).Assembly)
+            );
+
+            return refs;
         }
 
         private Type GetTelemetryServiceType()

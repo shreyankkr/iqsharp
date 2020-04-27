@@ -12,7 +12,7 @@ using System.Runtime.Loader;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-
+using NuGet.Packaging.Core;
 
 namespace Microsoft.Quantum.IQSharp
 {
@@ -47,24 +47,23 @@ namespace Microsoft.Quantum.IQSharp
         {
             Assemblies = QUANTUM_CORE_ASSEMBLIES.ToImmutableArray();
             Nugets = new NugetPackages(options, logger);
+            _metadata = new Lazy<CompilerMetadata>(() => new CompilerMetadata(this.Assemblies));
 
             eventService?.TriggerServiceInitialized<IReferences>(this);
 
             AssemblyLoadContext.Default.Resolving += Resolve;
-
-            Reset();
         }
 
         /// Manages nuget packages.
         internal NugetPackages Nugets { get; }
         private Lazy<CompilerMetadata> _metadata;
 
-        public event EventHandler<PackageLoadedEventArgs> PackageLoaded;
+        public event EventHandler<PackageLoadedEventArgs>? PackageLoaded;
 
         /// <summary>
         /// The plain list of Assemblies to be used as References. 
         /// </summary>
-        public ImmutableArray<AssemblyInfo> Assemblies { get; private set; }
+        public ImmutableArray<AssemblyInfo> Assemblies { get; internal set; }
 
         public CompilerMetadata CompilerMetadata => _metadata.Value;
 
@@ -99,23 +98,10 @@ namespace Microsoft.Quantum.IQSharp
             }
 
             var pkg = await Nugets.Add(name, statusCallback);
-
             AddAssemblies(Nugets.Assemblies.ToArray());
 
             duration.Stop();
             PackageLoaded?.Invoke(this, new PackageLoadedEventArgs(pkg.Id, pkg.Version.ToNormalizedString(), duration.Elapsed));
-        }
-
-        public async Task AddBuiltInPakage(string package, params AssemblyInfo[] assemblies)
-        {
-            if (Nugets == null)
-            {
-                throw new InvalidOperationException("Packages can be only added to the global references collection");
-            }
-
-            var pkgId = await Nugets.ParsePackageId(package);
-            Nugets.Add(pkgId, assemblies);
-            AddAssemblies(assemblies);
         }
 
         private void Reset()

@@ -50,10 +50,14 @@
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0-dev-00039" />
   </ItemGroup>
 
+  <!-- q# libraries... -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.Quantum.Standard" Version="0.11.2004.2414-beta" />
-    <PackageReference Include="Microsoft.Quantum.Katas" Version="0.11.2004.2414-beta" />
     <PackageReference Include="Microsoft.Quantum.Chemistry.Jupyter" Version="0.11.2004.2414-beta" />
+    <PackageReference Include="Microsoft.Quantum.Katas" Version="0.11.2004.2414-beta" />
+    <PackageReference Include="Microsoft.Quantum.MachineLearning" Version="0.11.2004.2414-beta" />
+    <PackageReference Include="Microsoft.Quantum.Numerics" Version="0.11.2004.2414-beta" />
+    <PackageReference Include="Microsoft.Quantum.Research" Version="0.11.2004.2414-beta" />
+    <PackageReference Include="Microsoft.Quantum.Standard" Version="0.11.2004.2414-beta" />
   </ItemGroup>
 
-  </Project>
+</Project>
