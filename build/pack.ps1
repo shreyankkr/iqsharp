@@ -118,8 +118,13 @@ function Pack-Exe() {
 Write-Host "##[info]Packing IQ# library..."
 Pack-Nuget '../src/Core/Core.csproj'
 
-Write-Host "##[info]Packing IQ# tool..."
-Pack-Nuget '../src/Tool/Tool.csproj'
+if ($Env:BUILD_SKIP_TOOL -eq "true") {
+    Write-Host "Skip build Tools (BUILD_SKIP_TOOL==true)"
+} else {
+    Write-Host "##[info]Packing IQ# tool..."
+    Pack-Nuget '../src/Tool/Tool.csproj'
+}
+
 
 if ($Env:ENABLE_CONDA -eq "true") {
     Write-Host "##[info]Packing IQ# as self-contained executables."

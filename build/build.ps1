@@ -27,7 +27,15 @@ function Build-One {
     }
 }
 
-Build-One build '../iqsharp.sln'
+Build-One build '../src/Core'
+Build-One build '../src/Jupyter'
+Build-One build '../src/Web'
+
+if ($Env:BUILD_SKIP_TOOL -eq "true") {
+    Write-Host "Skip build Tools (BUILD_SKIP_TOOL==true)"
+} else {
+    Build-One build '../src/Tool'
+}
 
 if (-not $all_ok) 
 {
