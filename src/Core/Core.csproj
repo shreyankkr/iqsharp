@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <!-- Automatically import a QDK-dev.props file if it exists in a parent folder. -->
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), QDK-dev.props))\QDK-dev.props" 
+    Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), QDK-dev.props))' != '' " />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -41,4 +44,7 @@
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
   </ItemGroup>
 
+  <!-- Automatically import a QDK-dev.targets file if it exists in a parent folder. -->
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), QDK-dev.targets))\QDK-dev.targets" 
+    Condition=" '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), QDK-dev.targets))' != '' " />
 </Project>
