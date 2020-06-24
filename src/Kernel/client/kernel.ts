@@ -8,6 +8,11 @@ import { IPython } from "./ipython";
 declare var IPython : IPython;
 
 import { Telemetry, ClientInfo } from "./telemetry.js";
+import { JsonToHtmlEncoder } from "./PathVisualizer/pathVisualizer.js";
+
+declare global {
+    interface Window { jsonToHtmlEncoder: JsonToHtmlEncoder; }
+}
 
 function defineQSharpMode() {
     console.log("Loading IQ# kernel-specific extension...");
@@ -119,6 +124,7 @@ class Kernel {
     hostingEnvironment : string | undefined;
     iqsharpVersion : string | undefined;
     telemetryOptOut? : boolean | null;
+    executionPathVisualizer : JsonToHtmlEncoder | undefined;
 
     constructor() {
         IPython.notebook.kernel.events.on("kernel_ready.Kernel", args => {
@@ -187,6 +193,7 @@ class Kernel {
                         console.log(`Using IQ# version ${this.iqsharpVersion} on hosting environment ${this.hostingEnvironment}.`);
 
                         this.initTelemetry();
+                        this.initExecutionPathVisualizer();
                     }
                 }
             }
@@ -223,6 +230,17 @@ class Kernel {
             );
         });
         Telemetry.initAsync();
+    }
+
+    initExecutionPathVisualizer() {
+        this.executionPathVisualizer = new JsonToHtmlEncoder();
+        IPython.notebook.kernel.register_iopub_handler(
+            "render_execution_path",
+            message => {
+                const { json, id } = message.content;
+                this.executionPathVisualizer.render(JSON.parse(json), id);
+            }
+        );
     }
 }
 

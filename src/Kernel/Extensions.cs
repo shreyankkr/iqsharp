@@ -5,6 +5,7 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Jupyter.Core;
 using Microsoft.Quantum.IQSharp.Jupyter;
+using Microsoft.Quantum.Simulation.Common;
 
 namespace Microsoft.Quantum.IQSharp.Kernel
 {
@@ -23,6 +24,14 @@ namespace Microsoft.Quantum.IQSharp.Kernel
             services.AddSingleton<IMagicSymbolResolver, Kernel.MagicSymbolResolver>();
             services.AddSingleton<IExecutionEngine, Kernel.IQSharpEngine>();
             services.AddSingleton<IConfigurationSource, ConfigurationSource>();
+        }
+
+        public static T WithExecutionPathTracer<T>(this T sim, ExecutionPathTracer tracer)
+            where T : SimulatorBase
+        {
+            sim.OnOperationStart += tracer.OnOperationStartHandler;
+            sim.OnOperationEnd += tracer.OnOperationEndHandler;
+            return sim;
         }
     }
 }
