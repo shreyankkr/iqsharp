@@ -94,6 +94,10 @@ namespace Microsoft.Quantum.IQSharp.Kernel
             };
             count++;
 
+            // Render empty div as cell output
+            channel.DisplayUpdatable(new ExecutionPathDisplayable { Id = content.Id });
+
+            // Send execution path to JS for rendering
             channel.SendIoPubMessage(
                 new Message
                 {
@@ -105,10 +109,7 @@ namespace Microsoft.Quantum.IQSharp.Kernel
                 }
             );
 
-            var res = new ExecutionPathDisplayable { Id = content.Id };
-
-
-            return res.ToExecutionResult();;
+            return ExecuteStatus.Ok.ToExecutionResult();
         }
     }
 }

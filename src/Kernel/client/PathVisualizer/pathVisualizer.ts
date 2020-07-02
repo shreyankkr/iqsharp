@@ -103,7 +103,6 @@ export class JsonToHtmlEncoder {
      */
     jsonToSvg = (json: ExecutionPath): string => {
         const { qubits, operations } = json;
-        console.log(operations);
         const { qubitWires, registers, svgHeight } = formatInputs(qubits);
         const { metadataList, svgWidth } = processOperations(operations, registers);
         const formattedGates: string = formatGates(metadataList);
@@ -126,21 +125,7 @@ export class JsonToHtmlEncoder {
 
     render = (json: ExecutionPath, id: string): void => {
         const html = this.jsonToHtml(json);
-        // Wait for container to be ready before populating it with circuit
-        const observer = new MutationObserver((mutations, observer) => {
-            for (const mutation of mutations) {
-                if (mutation.addedNodes == null || mutation.addedNodes.length === 0) continue;
-                const container = document.getElementById(id);
-                if (container != null) {
-                    container.innerHTML = html;
-                    observer.disconnect();
-                }
-                return;
-            }
-        });
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-        });
+        const container = document.getElementById(id);
+        container.innerHTML = html;
     };
 };
